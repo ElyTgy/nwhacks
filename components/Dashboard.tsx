@@ -183,7 +183,10 @@ export default function Dashboard(props: {token: any}) {
                 )}
             </div>
             {sessionData.bandpassed && !loading ? (
-                <TimeSeriesChart data={sessionData.bandpassed} ts={ts} fs={256}/> 
+                <>
+                <TimeSeriesChart data={sessionData.bandpassed} ts={ts} fs={256} yax_label={"Voltage"}/>
+                <TimeSeriesChart data={sessionData.concentration_score} ts={ts} fs={256} yax_label={"Concentration Score"}/> 
+                </>
             ) : (
                 <></>
             )}

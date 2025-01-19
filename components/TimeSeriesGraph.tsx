@@ -2,7 +2,7 @@ import React from "react";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from "recharts";
 
 // The `LineChart` component
-export default function TimeSeriesChart(props: { data: any, ts: any, fs: any }) {
+export default function TimeSeriesChart(props: { data: any, ts: any, fs: any, yax_label: any }) {
     // Preprocess the data
     function preprocessData(data: any, ts: any, fs: any) {
         const numChannels = data.length;
@@ -31,7 +31,7 @@ export default function TimeSeriesChart(props: { data: any, ts: any, fs: any }) 
     >
       <CartesianGrid strokeDasharray="3 3" />
       <XAxis dataKey="timestep" label={{ value: "Time (s)", position: "insideBottomRight", offset: -5 }} />
-      <YAxis label={{ value: "Voltage", angle: -90, position: "insideLeft" }} />
+      <YAxis label={{ value: props.yax_label, angle: -90, position: "insideLeft" }} />
       <Tooltip />
       <Legend />
       {Object.keys(processedData[0]).filter(key => key !== "timestep").map(channel => (
