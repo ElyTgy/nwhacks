@@ -6,8 +6,10 @@ import { Muse } from "../app/lib/Muse";
 import TimeSeriesChart from "./TimeSeriesGraph";
 import MuseModal from "./MuseModal";
 import Link from "next/link";
+import Image from 'next/image';
 import { useToast } from "./hooks/use-toast"
 import { Skeleton } from "./ui/skeleton";
+import { Alert, AlertTitle, AlertDescription } from "./ui/alert";
 
 
 export default function Dashboard(props: {token: any}) {
@@ -19,10 +21,21 @@ export default function Dashboard(props: {token: any}) {
         spectrogram: any;
         bandpowers: any;
         concentration_score: any;
+        Songs: Songs;
+    }
+
+    interface Songs {
+        id: any;
+        image: any;
+        song_name: any;
+        spotify_url: any;
+        artist_name: any;
+        song_ts: any;
+        focused: any;
     }
     
     const [loading, setLoading] = useState(false);    
-    const [sessionData, setSessionData] = useState<SessionData>({id: null, session_ts: null, focus_ts: null, bandpassed: null, spectrogram: null, bandpowers: null, concentration_score: null});
+    const [sessionData, setSessionData] = useState<SessionData>({id: null, session_ts: null, focus_ts: null, bandpassed: null, spectrogram: null, bandpowers: null, concentration_score: null, Songs: {id: null, image: null, song_name: null, spotify_url: null, artist_name: null, song_ts: null, focused: null}});
     const [status, setStatus] = useState("Not connected");
     const [isRecording, setIsRecording] = useState(false);
     const [recordedData, setRecordedData] = useState<{ startTimestamp: number | null; endTimestamp: number; eegData: any[][] } | null>(null);
@@ -207,8 +220,25 @@ export default function Dashboard(props: {token: any}) {
                     This is your brain activity based on the music you listened to.
                 </h1>
                 <div className="pr-16">
-                <TimeSeriesChart data={sessionData.bandpassed} ts={ts} fs={256}/> 
+                    <TimeSeriesChart data={sessionData.bandpassed} ts={ts} fs={256}/> 
                 </div>
+                <Alert variant="default" className="mt-8">
+                    <div className="relative w-16 h-16">
+                        <Image
+                            src={sessionData.Songs.image}
+                            alt="Album Art"
+                            fill
+                            className="object-cover"
+                            priority
+                        />
+                    </div>
+                    <AlertTitle>
+                        {sessionData.Songs.song_name}
+                    </AlertTitle>
+                    <AlertDescription>
+                        {sessionData.Songs.artist_name.join(", ")}
+                    </AlertDescription>
+                </Alert>
             </div>
             ) : (
                 <></>

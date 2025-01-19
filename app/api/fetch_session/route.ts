@@ -13,7 +13,8 @@ export async function GET(request: Request) {
     const { data, error } = await supabase
       .from('Session')
       .select(`
-        *
+        *,
+        Songs(id,image,song_name,spotify_url,artist_name,song_ts,focused)
       `)
       .eq('id', id);
     
