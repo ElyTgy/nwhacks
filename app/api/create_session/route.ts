@@ -3,9 +3,9 @@ import { NextResponse } from 'next/server';
 export async function POST(request: Request) {
     try {
         const data = await request.json();
-        const { startTimestamp, endTimestamp, eegData } = data;
+        const { startTimestamp, endTimestamp, eegData, provider_token } = data;
 
-        if (!startTimestamp || !endTimestamp || !eegData) {
+        if (!startTimestamp || !endTimestamp || !eegData || !provider_token) {
             return NextResponse.json(
                 { error: 'Missing required fields' }, 
                 { status: 400 }

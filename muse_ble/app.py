@@ -131,6 +131,7 @@ def spotify_processing(session_ts, focus_ts, session_id):
 
     response = requests.get(url, headers=headers, params=params)
     data = response.json()
+    print(data)
     song_items = []
 
     for item in data["items"]:

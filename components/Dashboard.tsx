@@ -9,7 +9,7 @@ import Link from "next/link";
 import { useToast } from "./hooks/use-toast"
 
 
-export default function Dashboard() {
+export default function Dashboard(props: {token: any}) {
     interface SessionData {
         id: any;
         session_ts: any;
@@ -74,6 +74,7 @@ export default function Dashboard() {
             title: "Recording Stopped!",
             description: "Your session is complete.",
         });
+        return data;
     };
 
     const getSessionData = async (id: any) => {
@@ -126,8 +127,12 @@ export default function Dashboard() {
     }
 
     const handleStopRecording = async () => {
-        await stopRecording();
-        handleCreateSession(recordedData);
+        const data = await stopRecording();
+        const updatedData = {
+            ...data,
+            provider_token: props.token,
+        };
+        handleCreateSession(updatedData);
     }
 
     useEffect(() => {

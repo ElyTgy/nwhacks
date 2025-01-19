@@ -29,7 +29,7 @@ export default async function DashboardPage() {
 
     return (
         <div>
-          <Dashboard />
+          <Dashboard token={session?.provider_token}/>
         </div>
     );
 }
