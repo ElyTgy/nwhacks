@@ -6,6 +6,11 @@ import os
 import numpy as np
 import sig_proc
 from supabase import create_client, Client
+import datetime
+import requests
+
+access_token = ''
+API_BASE_URL = "https://api.spotify.com/v1/"
 
 load_dotenv()
 
@@ -26,11 +31,12 @@ supabase: Client = create_client(SUPABASE_URL, SUPABASE_KEY)
 def index():
     return jsonify({"message": "Hello, World!"}), 200
 
-@app.route('/eeg', methods=['POST'])
-def receive_eeg_data():
+@app.route('/post_data', methods=['POST'])
+def receive_data():
+    global access_token
     data = request.get_json()
     
-    # print("Received EEG data:", data)
+    access_token = data['provider_token']
     # extract unix timestamps
     startTimestamp = data['startTimestamp']
     endTimestamp = data['endTimestamp']
@@ -111,9 +117,86 @@ def receive_eeg_data():
     except Exception as e:
         print(e)
         return jsonify({"message": "Error inserting data into Supabase"}), 500
+    
+    # process Spotify data
+    spotify_processing([startTimestamp, endTimestamp], focus_ts, row_obj['id'])
 
-    return jsonify({"message": "EEG data received successfully"}), 200
+    return jsonify({"message": "EEG data received successfully AND spotify DB complete", "id": row_obj['id']}), 200
 
+
+def spotify_processing(session_ts, focus_ts, session_id):
+    headers = get_headers()
+    url = API_BASE_URL + 'me/player/recently-played'
+    params = {"limit": 50, "after": session_ts[0]}
+
+    response = requests.get(url, headers=headers, params=params)
+    data = response.json()
+    song_items = []
+
+    for item in data["items"]:
+        track = item["track"]
+        played_at = datetime.strptime(item["played_at"], "%Y-%m-%dT%H:%M:%S.%fZ")
+        song_name = track["name"]
+        artist_name = [artist["name"] for artist in track["artists"]]
+        image = track["images"][0]["url"]
+        spotify_url = track["external_urls"]["spotify"]
+        duration_ms = track["duration_ms"]
+        
+        # Calculate stop listening time
+        stopped_at = played_at.timestamp() + (duration_ms / 1000)
+        
+        song_items.append({
+            "id": session_id,
+            "song_name": song_name,
+            "spotify_url": spotify_url,
+            "artist_name": artist_name,
+            "image": image,
+            "start_time_unix": int(played_at.timestamp()),
+            "stop_time_unix": int(stopped_at)
+        })
+
+
+    #TODO: update logic (complex)
+    # 1. normalize the beta/theta (concentration score) values over the session -> [0,1] range
+    # 2. use 1 STD from the mean as the threshold for "focus"
+    # 3. based on how long a song overlaps with a focus period, it will be considered a "focus song" -> 50% of song duration is focus
+
+    # update logic (naive)
+    # 1. for every song, during the duration of that song, find the focused intervals and get the length of them and sum it up
+    # 2. store array of tuples with (focused_duration, song_item)
+    # 3. rank each song based on focused_duration
+
+    ranked_songs = []
+    for song_item in song_items:
+        focus_sum = 0
+        for ts in focus_ts:
+            if song_item["start_time_unix"] <= ts[0] and song_item["stop_time_unix"] >= ts[1]:
+                focus_sum += (ts[1]-ts[0])
+        ranked_songs.append((focus_sum, song_item))
+    
+    ranked_songs = sorted(ranked_songs, key=lambda x: x[0])
+    split_index = len(ranked_songs) // 3
+
+    for i, song_item in enumerate(ranked_songs):
+        if i < split_index:
+            song_item['focused'] = True
+        else:
+            song_item['focused'] = False
+
+
+    # insert into Songs
+    try:
+        supabase.table('Songs').insert(ranked_songs).execute()
+    except Exception as e:
+        print(e)
+        return jsonify({"message": "Error inserting data into Supabase"}), 500
+
+
+#@app.route('/create-playlist', methods = ["POST"]):
+
+def get_headers():
+    global access_token
+    return {"Authorization": f"Bearer {access_token}"}
 
 
 if __name__ == '__main__':
