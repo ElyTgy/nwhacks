@@ -226,9 +226,9 @@ export default function Dashboard(props: {token: any}) {
                 <h1 className="text-2xl font-semibold text-center my-8">
                     This is your brain activity based on the music you listened to.
                 </h1>
-                <div className="pr-16">
-                    <TimeSeriesChart data={sessionData.bandpassed} ts={ts} fs={256} yax_label={"Voltage"}/>
-                    <TimeSeriesChart data={sessionData.concentration_score} ts={ts} fs={256} yax_label={"Concentration Score"}/>
+                <div className="pr-16 h-full">
+                    <TimeSeriesChart data={sessionData.bandpassed} ts={ts} fs={256} yax_label={"Voltage"} focus_bars={sessionData.focus_ts} session_ts={sessionData.session_ts}/>
+                    <TimeSeriesChart data={sessionData.concentration_score} ts={ts} fs={256} yax_label={"Concentration Score"} focus_bars={sessionData.focus_ts} session_ts={sessionData.session_ts} />
                 </div>
                 <Alert variant="default" className="mt-8">
                     <div className="relative w-16 h-16">

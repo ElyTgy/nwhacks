@@ -1,8 +1,8 @@
 import React from "react";
-import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from "recharts";
+import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ReferenceArea } from "recharts";
 
 // The `LineChart` component
-export default function TimeSeriesChart(props: { data: any, ts: any, fs: any, yax_label: any }) {
+export default function TimeSeriesChart(props: { data: any, ts: any, fs: any, yax_label: any, focus_bars: any, session_ts: any }) {
     // Preprocess the data
     function preprocessData(data: any, ts: any, fs: any) {
         // Check if the data is 1D or 2D
@@ -65,7 +65,18 @@ export default function TimeSeriesChart(props: { data: any, ts: any, fs: any, ya
                 }}
                 labelStyle={{ color: "black" }}  // sage1
             />
-            
+
+            {/* Add focus bars */}
+            {props.focus_bars.map(([start, end]: [number, number], index: number) => (
+                <ReferenceArea
+                    key={index}
+                    x1={(start - props.session_ts[0]) / 1000}
+                    x2={(end - props.session_ts[0]) / 1000}
+                    strokeOpacity={0.3}
+                    fill="#72B68A"
+                />
+            ))}
+
             {Object.keys(processedData[0])
                 .filter(key => key !== "timestep")
                 .map((channel) => (
