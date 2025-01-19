@@ -52,33 +52,58 @@ def receive_eeg_data():
     highcut = 30
     filtered_eeg = sig_proc.filtering(eegData, lowcut, highcut)
     print(filtered_eeg.shape)
-    spec_eeg, f, t = sig_proc.spec_array(filtered_eeg)
+    fs = 256
+    n_fft = 256
+    overlap = 0
+    spec_dt = (n_fft - overlap)/fs
+    spec_eeg, f, t = sig_proc.spec_array(filtered_eeg, n_fft, overlap)
     print(spec_eeg.shape, f.shape, t.shape)
     band_power = sig_proc.bandpowers(spec_eeg, f)    
-    print(band_power)
+    # print(band_power)
 
+     # take ratio between beta and theta scores from band_power
+    concentration_score = abs(np.array(band_power['beta']) / np.array(band_power['theta']))
+    print('concentration scores', concentration_score.shape)
+    # print('concentration scores', concentration_score)
+
+    # if the concentration score is greater than 0.5, the user is focused -> find contiguous time intervals of focus and append tuples of start and end times to focus_ts
+    focus_ts = []
+    focus_start = None
+    for i, score in enumerate(concentration_score):
+        if score > 0.5:
+            if focus_start is None:
+                focus_start = i
+        else:
+            if focus_start is not None:
+                try:
+                    if concentration_score[i+1]:
+                        continue
+                    else:
+                        focus_ts.append([startTimestamp+spec_dt*focus_start, startTimestamp+spec_dt*i])
+                        focus_start = None
+                except:
+                    focus_ts.append([startTimestamp+spec_dt*focus_start, startTimestamp+spec_dt*i])
+                    focus_start = None
+    
     # insert data into Supabase
     row_obj = {}
     # get id of previous row in Session table
     try:
-        prev_row = supabase.table('Session').select('id').order('id', ascending=False).limit(1).execute().get('data')[0]
-        prev_id = prev_row['id']
-    except:
-        prev_id = 0
+        response = supabase.table('Session').select('id').order('id', desc=True).limit(1).execute()
+        prev_id = response.data[0]['id']
+    except Exception as e:
+        print(e)
+        prev_id = -1
     row_obj['id'] = prev_id + 1
 
     # row_obj['startTimestamp'] = startTimestamp
     # row_obj['endTimestamp'] = endTimestamp
     row_obj['session_ts'] = [startTimestamp, endTimestamp]
+    row_obj['focus_ts'] = focus_ts
     row_obj['bandpassed'] = filtered_eeg.tolist()
     row_obj['spectrogram'] = spec_eeg.tolist()
     row_obj['bandpowers'] = band_power
-
-    # make a list of tuples of random integers in a 'focus_ts' and 'distract_ts' column
-    focus_ts = np.random.randint(0, deltaTime, 5)
-    distract_ts = np.random.randint(0, deltaTime, 5)
-    row_obj['focus_ts'] = focus_ts.tolist()
-    row_obj['distract_ts'] = distract_ts.tolist()
+    row_obj['concentration_score'] = concentration_score.tolist()
 
     # insert into Session table
     try:
