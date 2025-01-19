@@ -64,23 +64,6 @@ def callback():
         return redirect('/dashboard')
 
 
-@app.route('/dashboard')
-def dashboard():
-    if 'access_token' not in session:
-        return redirect('/login')
-    if datetime.now().timestamp() > session["expires_at"]:
-        return redirect('/refresh_token')
-    
-    headers = {
-        'Authorization': f"Bearer {session['access_token']}",
-    }
-
-    response = requests.get(API_BASE_URL + 'me/playlists', headers=headers)
-    playlists = response.json()
-
-    return jsonify(playlists)
-
-
 @app.route('/refresh-token')
 def refresh_token():
     if 'refresh_token' not in session:
@@ -100,7 +83,24 @@ def refresh_token():
         session['expires_at'] = datetime.now().timestamp() + new_token_info['expires_in']
 
         return redirect('/dashboard')
+
+
+@app.route('/dashboard')
+def dashboard():
+    if 'access_token' not in session:
+        return redirect('/login')
+    if datetime.now().timestamp() > session["expires_at"]:
+        return redirect('/refresh_token')
     
+    headers = {
+        'Authorization': f"Bearer {session['access_token']}",
+    }
+
+    response = requests.get(API_BASE_URL + 'me/playlists', headers=headers)
+    playlists = response.json()
+
+    return jsonify(playlists)
+
 
 if __name__ == '__main__':
     app.run(host='localhost', port=8000, debug=True)
