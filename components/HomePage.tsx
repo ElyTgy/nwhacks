@@ -34,7 +34,7 @@ export default function Home() {
       provider: 'spotify',
       options: {
         redirectTo: `http://localhost:3000/auth/callback?next=/dashboard`,
-        scopes: 'user-read-email user-read-private',
+        scopes: 'user-read-email user-read-private user-read-recently-played',
         skipBrowserRedirect: false,
         queryParams: {
             prompt: 'consent'

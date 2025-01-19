@@ -80,7 +80,7 @@ export default function Dashboard(props: {token: any}) {
     const getSessionData = async (id: any) => {
         try {
             setLoading(true);
-            const res = await fetch(`/api/fetch_session/route.ts?id=${id}`);
+            const res = await fetch(`/api/fetch_session?id=${id}`);
             const response = await res.json();
             if (response && response.length > 0) {
                 console.log(response);
@@ -112,7 +112,7 @@ export default function Dashboard(props: {token: any}) {
             
             const response = await res.json();
             console.log('Session created:', response);
-            setSessionId(response[0].id);
+            setSessionId(response.id);
             
         } catch (e) {
             console.error('Error creating session:', e);
@@ -181,9 +181,10 @@ export default function Dashboard(props: {token: any}) {
                     </button>
                 )}
             </div>
-            {sessionId && (
+            {sessionId ? (
                 <TimeSeriesChart data={sessionData?.bandpassed} ts={ts} fs={256}/> 
-                
+            ): (
+                <></>
             )}
         </div>
     );
