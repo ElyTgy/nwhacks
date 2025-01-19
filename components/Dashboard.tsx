@@ -92,6 +92,7 @@ export default function Dashboard(props: {token: any}) {
         } catch (error) {
             console.error("Error getting data:", error);
         } finally {
+            console.log("sessionData:", sessionData);
             setLoading(false);
         };
     }
@@ -181,7 +182,7 @@ export default function Dashboard(props: {token: any}) {
                     </button>
                 )}
             </div>
-            {sessionId && !loading ? (
+            {sessionData.bandpassed && !loading ? (
                 <TimeSeriesChart data={sessionData.bandpassed} ts={ts} fs={256}/> 
             ) : (
                 <></>
