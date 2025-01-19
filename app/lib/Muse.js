@@ -134,8 +134,6 @@ class MuseDynamicBuffer {
     eegData (n,event) {
   
       if (this.isRecording == false) return;
-
-      console.log("EEG");
   
       var data = event.target.value;
       data = data.buffer ? data: new DataView(data);

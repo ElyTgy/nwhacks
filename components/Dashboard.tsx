@@ -1,19 +1,22 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { logOut } from "../app/lib/supabase/auth";
 import { Muse } from "../app/lib/Muse";
 
 
 export default function Dashboard() {
     const [status, setStatus] = useState("Not connected");
-    const [recordedData, setRecordedData] = useState(null);
-    let muse = new Muse();
+    const [recordedData, setRecordedData] = useState<{ startTimestamp: number | null; endTimestamp: number; eegData: any[][] } | null>(null);
+    const museRef = useRef<Muse | null>(null);
 
     const connectMuse = async () => {
         try {
             setStatus("Connecting...");
-            await muse.connect();
+            if (!museRef.current) {
+                museRef.current = new Muse();
+            }
+            await museRef.current.connect();
             setStatus("Connected");
         } catch (error) {
             setStatus("Connection failed");
@@ -22,13 +25,21 @@ export default function Dashboard() {
     };
 
     const startRecording = () => {
-        muse.startRecording();
+        if (!museRef.current) {
+            setStatus("Please connect to Muse first");
+            return;
+        }
+        museRef.current.startRecording();
         setStatus("Recording started...");
         console.log("Recording started...");
     };
 
     const stopRecording = async () => {
-        const data = muse.stopRecording();
+        if (!museRef.current) {
+            setStatus("No active Muse connection");
+            return;
+        }
+        const data = museRef.current.stopRecording();
         setStatus("Recording stopped.");
         setRecordedData(data);
         console.log("Recording stopped.", data);
