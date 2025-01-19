@@ -6,7 +6,7 @@ import os
 import numpy as np
 import sig_proc
 from supabase import create_client, Client
-from datetime import datetime
+from datetime import datetime, timezone
 import requests
 
 access_token = ''
@@ -111,6 +111,8 @@ def receive_data():
     row_obj['bandpowers'] = band_power
     row_obj['concentration_score'] = concentration_score.tolist()
 
+    print("focus_ts: ", focus_ts)
+
     # insert into Session table
     try:
         supabase.table('Session').insert([row_obj]).execute()
@@ -124,11 +126,10 @@ def receive_data():
     return jsonify({"message": "EEG data received successfully AND spotify DB complete", "id": row_obj['id']}), 200
 
 
-def spotify_processing(session_ts, focus_ts, session_id):
+def spotify_processing(session_ts, focus_ts, session_id):    
     headers = get_headers()
     url = API_BASE_URL + 'me/player/recently-played'
-    params = {"limit": 50, "after": session_ts[0]}
-    # params = {"limit": 50}
+    params = {"limit": 50, "after": unix_to_iso8601(session_ts[0])}
 
     response = requests.get(url, headers=headers, params=params)
     data = response.json()
@@ -140,7 +141,7 @@ def spotify_processing(session_ts, focus_ts, session_id):
         played_at = datetime.strptime(item["played_at"], "%Y-%m-%dT%H:%M:%S.%fZ")
         song_name = track["name"]
         artist_name = [artist["name"] for artist in track["artists"]]
-        # image = track["images"][0]["url"]
+        image = track["album"]["images"][0]["url"]
         spotify_url = track["external_urls"]["spotify"]
         duration_ms = track["duration_ms"]
         
@@ -152,7 +153,7 @@ def spotify_processing(session_ts, focus_ts, session_id):
             "song_name": song_name,
             "spotify_url": spotify_url,
             "artist_name": artist_name,
-            "image": "",
+            "image": image,
             "song_ts": [played_at.timestamp(), stopped_at],
         })
 
@@ -188,18 +189,29 @@ def spotify_processing(session_ts, focus_ts, session_id):
     ranked_songs = [song_item[1] for song_item in ranked_songs]
     print(len(ranked_songs))
     # insert into Songs
-    try:
-        supabase.table('Songs').insert(ranked_songs).execute()
-    except Exception as e:
-        print(e)
-        return jsonify({"message": "Error inserting data into Supabase"}), 500
+    if song_items:
+        try:
+            supabase.table('Songs').insert(ranked_songs).execute()
+        except Exception as e:
+            print(e)
+            return jsonify({"message": "Error inserting data into Supabase"}), 500
+    else:
+        return jsonify({"message": "No song items to insert"}), 200
 
 
 #@app.route('/create-playlist', methods = ["POST"]):
 
+#helpers
 def get_headers():
     global access_token
     return {"Authorization": f"Bearer {access_token}"}
+
+
+def unix_to_iso8601(unix_timestamp):
+    timestamp = int(unix_timestamp/1000)
+    timestamp = float(timestamp)
+    dt = datetime.fromtimestamp(timestamp, tz=timezone.utc)
+    return dt.strftime('%Y-%m-%dT%H:%M:%SZ')
 
 
 if __name__ == '__main__':

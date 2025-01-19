@@ -1,23 +1,26 @@
 import React from "react";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from "recharts";
 
-export default function TimeSeriesChart(props: { data: any; ts: any; fs: any }) {
-  function preprocessData(data: any, ts: any, fs: any) {
-    const numChannels = data.length;
-    const numSamples = data[0].length;
-    
-    const result = Array.from({ length: numSamples }, (_, sampleIdx) => {
-      const entry: { [key: string]: any } = { timestep: ts + sampleIdx / fs };
-      for (let channelIdx = 0; channelIdx < numChannels; channelIdx++) {
-        entry[`channel${channelIdx + 1}`] = data[channelIdx][sampleIdx];
+// The `LineChart` component
+export default function TimeSeriesChart(props: { data: any, ts: any, fs: any, yax_label: any }) {
+    // Preprocess the data
+    function preprocessData(data: any, ts: any, fs: any) {
+        const numChannels = data.length;
+        const numSamples = data[0].length;
+      
+        // Create an array of objects for each sample
+        const result = Array.from({ length: numSamples }, (_, sampleIdx) => {
+          const entry: { [key: string]: any } = { timestep: ts + sampleIdx / fs }; // Adjust timestep to match sampling rate
+          for (let channelIdx = 0; channelIdx < numChannels; channelIdx++) {
+            entry[`channel${channelIdx + 1}`] = data[channelIdx][sampleIdx];
+          }
+          return entry;
+        });
+      
+        return result;
       }
-      return entry;
-    });
-    
-    return result;
-  }
-
-  const processedData = preprocessData(props.data, props.ts, props.fs);
+  
+    const processedData = preprocessData(props.data, props.ts, props.fs);
 
   return (
     <LineChart
