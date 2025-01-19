@@ -6,7 +6,7 @@ import os
 import numpy as np
 import sig_proc
 from supabase import create_client, Client
-import datetime
+from datetime import datetime
 import requests
 
 access_token = ''
@@ -128,10 +128,11 @@ def spotify_processing(session_ts, focus_ts, session_id):
     headers = get_headers()
     url = API_BASE_URL + 'me/player/recently-played'
     params = {"limit": 50, "after": session_ts[0]}
+    # params = {"limit": 50}
 
     response = requests.get(url, headers=headers, params=params)
     data = response.json()
-    print(data)
+    print(len(data))
     song_items = []
 
     for item in data["items"]:
@@ -139,7 +140,7 @@ def spotify_processing(session_ts, focus_ts, session_id):
         played_at = datetime.strptime(item["played_at"], "%Y-%m-%dT%H:%M:%S.%fZ")
         song_name = track["name"]
         artist_name = [artist["name"] for artist in track["artists"]]
-        image = track["images"][0]["url"]
+        # image = track["images"][0]["url"]
         spotify_url = track["external_urls"]["spotify"]
         duration_ms = track["duration_ms"]
         
@@ -151,7 +152,7 @@ def spotify_processing(session_ts, focus_ts, session_id):
             "song_name": song_name,
             "spotify_url": spotify_url,
             "artist_name": artist_name,
-            "image": image,
+            "image": "",
             "song_ts": [played_at.timestamp(), stopped_at],
         })
 
@@ -170,7 +171,7 @@ def spotify_processing(session_ts, focus_ts, session_id):
     for song_item in song_items:
         focus_sum = 0
         for ts in focus_ts:
-            if song_item["start_time_unix"] <= ts[0] and song_item["stop_time_unix"] >= ts[1]:
+            if song_item["song_ts"][0] <= ts[0] and song_item["song_ts"][1] >= ts[1]:
                 focus_sum += (ts[1]-ts[0])
         ranked_songs.append((focus_sum, song_item))
     
@@ -179,11 +180,13 @@ def spotify_processing(session_ts, focus_ts, session_id):
 
     for i, song_item in enumerate(ranked_songs):
         if i < split_index:
-            song_item['focused'] = True
+            song_item[1]['focused'] = True
         else:
-            song_item['focused'] = False
+            song_item[1]['focused'] = False
 
-
+    # extract only the song items
+    ranked_songs = [song_item[1] for song_item in ranked_songs]
+    print(len(ranked_songs))
     # insert into Songs
     try:
         supabase.table('Songs').insert(ranked_songs).execute()
