@@ -150,6 +150,12 @@ export default function Dashboard(props: {token: any}) {
         handleCreateSession(updatedData);
     }
 
+    const formatArtistNames = (artists: string[]) => {
+        if (!artists || artists.length === 0) return "";
+        if (artists.length === 1) return artists[0];
+        return artists.join(", ");
+    };
+
     useEffect(() => {
         getSessionData(sessionId);
     }, [sessionId]);
@@ -239,7 +245,7 @@ export default function Dashboard(props: {token: any}) {
                         {sessionData.Songs[0].song_name}
                     </AlertTitle>
                     <AlertDescription>
-                        {sessionData.Songs[0].artist_name.join(", ")}
+                        {formatArtistNames(sessionData.Songs[0].artist_name)}
                     </AlertDescription>
                 </Alert>
             </div>
