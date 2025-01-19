@@ -228,7 +228,6 @@ export default function Dashboard(props: {token: any}) {
                 </h1>
                 <div className="pr-16">
                     <TimeSeriesChart data={sessionData.bandpassed} ts={ts} fs={256} yax_label={"Voltage"}/>
-                <TimeSeriesChart data={sessionData.concentration_score} ts={ts} fs={256} yax_label={"Concentration Score"}/> 
                 
                 </div>
                 <Alert variant="default" className="mt-8">
@@ -245,7 +244,7 @@ export default function Dashboard(props: {token: any}) {
                         {sessionData.Songs[0].song_name}
                     </AlertTitle>
                     <AlertDescription>
-                        {formatArtistNames(sessionData.Songs[0].artist_name)}
+                        {formatArtistNames(JSON.parse(sessionData.Songs[0].artist_name))}
                     </AlertDescription>
                 </Alert>
             </div>
