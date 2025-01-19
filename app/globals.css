@@ -1,0 +1,68 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.button {
+  @apply whitespace-nowrap rounded-lg bg-accent2 max-h-fit px-8 py-3 text-xl font-semibold text-gray-100 hover:drop-shadow-xl hover:bg-accent4 hover:scale-105 duration-300 focus:outline-none
+}
+
+.small-button {
+  @apply whitespace-nowrap rounded-lg px-4 py-2 max-h-fit text-md font-semibold text-gray-100 hover:drop-shadow-xl hover:scale-105 duration-300
+}
+
+.xs-button {
+  @apply whitespace-nowrap rounded-lg duration-300 px-3 py-[6px] max-h-fit text-center text-xs font-semibold text-gray-100 hover:drop-shadow-lg hover:scale-105
+}
+
+::-webkit-scrollbar {
+  width: 8px; /* Width of the scrollbar */
+}
+
+::-webkit-scrollbar-track {
+  background: #313131; /* No background for the scrollbar track */
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: #151515; /* black2 color */
+  border-radius: 10px; /* Rounded scrollbar thumb */
+  border: 1px solid transparent; /* Optional: Add some space around the thumb */
+  background-clip: content-box; /* Optional: Ensure the border is visible */
+}
+
+.nextjs-toast {
+  display: none !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
+  z-index: -9999 !important;
+  pointer-events: none !important;
+}
+
+div[role="status"] {
+  display: none !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
+}
+
+[data-nextjs-toast-wrapper] {
+  display: none !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
+}
+
+.nextjs-static-indicator-toast-wrapper {
+  display: none !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
+}
+
+[class*="nextjs-toast"],
+[class*="static-indicator"],
+[class*="toast-wrapper"] {
+  display: none !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
+}
+
+body {
+  font-family: 'Urbane', sans-serif;
+}
