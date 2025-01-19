@@ -21,7 +21,7 @@ export default function Dashboard(props: {token: any}) {
         spectrogram: any;
         bandpowers: any;
         concentration_score: any;
-        Songs: Songs;
+        Songs: Songs[];
     }
 
     interface Songs {
@@ -35,7 +35,7 @@ export default function Dashboard(props: {token: any}) {
     }
     
     const [loading, setLoading] = useState(false);    
-    const [sessionData, setSessionData] = useState<SessionData>({id: null, session_ts: null, focus_ts: null, bandpassed: null, spectrogram: null, bandpowers: null, concentration_score: null, Songs: {id: null, image: null, song_name: null, spotify_url: null, artist_name: null, song_ts: null, focused: null}});
+    const [sessionData, setSessionData] = useState<SessionData>({id: null, session_ts: null, focus_ts: null, bandpassed: null, spectrogram: null, bandpowers: null, concentration_score: null, Songs: []});
     const [status, setStatus] = useState("Not connected");
     const [isRecording, setIsRecording] = useState(false);
     const [recordedData, setRecordedData] = useState<{ startTimestamp: number | null; endTimestamp: number; eegData: any[][] } | null>(null);
@@ -225,7 +225,7 @@ export default function Dashboard(props: {token: any}) {
                 <Alert variant="default" className="mt-8">
                     <div className="relative w-16 h-16">
                         <Image
-                            src={sessionData.Songs.image}
+                            src={sessionData.Songs[0].image}
                             alt="Album Art"
                             fill
                             className="object-cover"
@@ -233,10 +233,10 @@ export default function Dashboard(props: {token: any}) {
                         />
                     </div>
                     <AlertTitle>
-                        {sessionData.Songs.song_name}
+                        {sessionData.Songs[0].song_name}
                     </AlertTitle>
                     <AlertDescription>
-                        {sessionData.Songs.artist_name.join(", ")}
+                        {sessionData.Songs[0].artist_name.join(", ")}
                     </AlertDescription>
                 </Alert>
             </div>
