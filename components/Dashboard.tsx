@@ -7,6 +7,7 @@ import TimeSeriesChart from "./TimeSeriesGraph";
 import MuseModal from "./MuseModal";
 import Link from "next/link";
 import { useToast } from "./hooks/use-toast"
+import { Skeleton } from "./ui/skeleton";
 
 
 export default function Dashboard(props: {token: any}) {
@@ -158,32 +159,57 @@ export default function Dashboard(props: {token: any}) {
                     </button>
                 </div>
             </nav>
-
-            <h1 className="text-6xl font-semibold text-center my-8">
-                Let's get started.
-            </h1>
-            <p className="text-xl text-gray-600 mb-2 max-w-2xl text-center">
-                Connect your Muse device to start recording your brain activity.
-            </p>
-            <div className="mt-4 space-x-8">
-                <MuseModal 
-                    connectMuse={connectMuse}
-                    startRecording={startRecording}
-                    status={status}
-                    open={dialogOpen}
-                    setOpen={setDialogOpen}
-                />
-                {isRecording && (
-                    <button 
-                        className="bg-red-500 text-white px-5 py-2.5 rounded-lg hover:bg-red-600 hover:scale-105 duration-300"
-                        onClick={handleStopRecording}
-                    >
-                        Stop Recording
-                    </button>
-                )}
-            </div>
+            {!sessionData.bandpassed && !loading ? (
+                <div className="flex flex-col items-center">
+                    <h1 className="text-6xl font-semibold text-center my-8">
+                        Let's get started.
+                    </h1>
+                    <p className="text-xl text-gray-600 mb-2 max-w-2xl text-center">
+                        Connect your Muse device to start recording your brain activity.
+                    </p>
+                    <div className="flex flex-row mt-4 space-x-8">
+                        <MuseModal 
+                            connectMuse={connectMuse}
+                            startRecording={startRecording}
+                            status={status}
+                            open={dialogOpen}
+                            setOpen={setDialogOpen}
+                        />
+                        {isRecording && (
+                            <button 
+                                className="bg-red-500 text-white px-5 py-2.5 rounded-lg hover:bg-red-600 hover:scale-105 duration-300"
+                                onClick={handleStopRecording}
+                            >
+                                Stop Recording
+                            </button>
+                        )}
+                    </div>
+                </div>
+            ) : (
+                <h1 className="text-5xl font-semibold text-center my-8">
+                    Let's review your session.
+                </h1>
+            )}
+            {loading ? (
+                <div className="flex flex-col space-y-3 mt-8">
+                    <Skeleton className="h-[125px] w-[250px] rounded-xl" />
+                    <div className="flex flex-col space-y-2">
+                        <Skeleton className="h-[10px] w-[250px]" />
+                        <Skeleton className="h-[10px] w-[200px]" />
+                    </div>
+                </div>
+            ): (
+                <></>
+            )}
             {sessionData.bandpassed && !loading ? (
+            <div className="flex flex-col h-full justify-center items-center py-16">
+                <h1 className="text-2xl font-semibold text-center my-8">
+                    This is your brain activity based on the music you listened to.
+                </h1>
+                <div className="pr-16">
                 <TimeSeriesChart data={sessionData.bandpassed} ts={ts} fs={256}/> 
+                </div>
+            </div>
             ) : (
                 <></>
             )}

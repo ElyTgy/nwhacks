@@ -13,7 +13,7 @@ export async function POST(request: Request) {
         }
 
         // Make request to Flask server
-        const flaskResponse = await fetch(`${process.env.NEXT_FLASK_URL!}/post_data`, {
+        const flaskResponse = await fetch(`${process.env.NEXT_FLASK_URL!}post_data`, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
