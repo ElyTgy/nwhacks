@@ -215,7 +215,7 @@ export default function Dashboard(props: {token: any}) {
                 <></>
             )}
             {sessionData.bandpassed && !loading ? (
-                <>
+                
             <div className="flex flex-col h-full justify-center items-center py-16">
                 <h1 className="text-2xl font-semibold text-center my-8">
                     This is your brain activity based on the music you listened to.
@@ -223,7 +223,7 @@ export default function Dashboard(props: {token: any}) {
                 <div className="pr-16">
                     <TimeSeriesChart data={sessionData.bandpassed} ts={ts} fs={256} yax_label={"Voltage"}/>
                 <TimeSeriesChart data={sessionData.concentration_score} ts={ts} fs={256} yax_label={"Concentration Score"}/> 
-                </>
+                
                 </div>
                 <Alert variant="default" className="mt-8">
                     <div className="relative w-16 h-16">
