@@ -38,7 +38,7 @@
 }
 
 @font-face {
-    font-family: 'Urbane Demi';
+    font-family: 'Urbane';
     src: url('Urbane-DemiBold.eot');
     src: local('Urbane Demi Bold'), local('Urbane-DemiBold'),
         url('Urbane-DemiBold.eot?#iefix') format('embedded-opentype'),
@@ -84,13 +84,13 @@
         url('Urbane-BoldItalic.woff2') format('woff2'),
         url('Urbane-BoldItalic.woff') format('woff'),
         url('Urbane-BoldItalic.ttf') format('truetype');
-    font-weight: bold;
+    font-weight: 700;
     font-style: italic;
     font-display: swap;
 }
 
 @font-face {
-    font-family: 'Urbane Extra';
+    font-family: 'Urbane';
     src: url('Urbane-ExtraLight.eot');
     src: local('Urbane Extra Light'), local('Urbane-ExtraLight'),
         url('Urbane-ExtraLight.eot?#iefix') format('embedded-opentype'),
@@ -123,34 +123,8 @@
         url('Urbane-Bold.woff2') format('woff2'),
         url('Urbane-Bold.woff') format('woff'),
         url('Urbane-Bold.ttf') format('truetype');
-    font-weight: bold;
+    font-weight: 700;
     font-style: normal;
-    font-display: swap;
-}
-
-@font-face {
-    font-family: 'Urbane';
-    src: url('Urbane-MediumItalic.eot');
-    src: local('Urbane Medium Italic'), local('Urbane-MediumItalic'),
-        url('Urbane-MediumItalic.eot?#iefix') format('embedded-opentype'),
-        url('Urbane-MediumItalic.woff2') format('woff2'),
-        url('Urbane-MediumItalic.woff') format('woff'),
-        url('Urbane-MediumItalic.ttf') format('truetype');
-    font-weight: 500;
-    font-style: italic;
-    font-display: swap;
-}
-
-@font-face {
-    font-family: 'Urbane Demi';
-    src: url('Urbane-DemiBoldItalic.eot');
-    src: local('Urbane Demi Bold Italic'), local('Urbane-DemiBoldItalic'),
-        url('Urbane-DemiBoldItalic.eot?#iefix') format('embedded-opentype'),
-        url('Urbane-DemiBoldItalic.woff2') format('woff2'),
-        url('Urbane-DemiBoldItalic.woff') format('woff'),
-        url('Urbane-DemiBoldItalic.ttf') format('truetype');
-    font-weight: 600;
-    font-style: italic;
     font-display: swap;
 }
 
@@ -168,7 +142,7 @@
 }
 
 @font-face {
-    font-family: 'Urbane Extra';
+    font-family: 'Urbane';
     src: url('Urbane-ExtraLightItalic.eot');
     src: local('Urbane Extra Light Italic'), local('Urbane-ExtraLightItalic'),
         url('Urbane-ExtraLightItalic.eot?#iefix') format('embedded-opentype'),

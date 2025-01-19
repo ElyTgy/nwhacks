@@ -29,6 +29,40 @@
   background-clip: content-box; /* Optional: Ensure the border is visible */
 }
 
+.nextjs-toast {
+  display: none !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
+  z-index: -9999 !important;
+  pointer-events: none !important;
+}
+
+div[role="status"] {
+  display: none !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
+}
+
+[data-nextjs-toast-wrapper] {
+  display: none !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
+}
+
+.nextjs-static-indicator-toast-wrapper {
+  display: none !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
+}
+
+[class*="nextjs-toast"],
+[class*="static-indicator"],
+[class*="toast-wrapper"] {
+  display: none !important;
+  opacity: 0 !important;
+  visibility: hidden !important;
+}
+
 body {
   font-family: 'Urbane', sans-serif;
 }
