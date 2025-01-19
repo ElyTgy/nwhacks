@@ -1,17 +1,35 @@
-"use client";
+"use server";
 
-import { logOut }  from '../lib/supabase/auth';
+import Dashboard from "@/components/Dashboard";
+import { createClient } from "../lib/supabase/server";
 
-export default function Dashboard() {
+export default async function DashboardPage() {
+
+  const supabase = createClient();
+  const { data: { session } } = await supabase.auth.getSession();
+  if (!session) {
+    console.log("No active session.");
+  } else {
+    console.log("User ID:", session.user.id);
+    console.log("Access Token:", session.provider_token);
+    console.log("Token Type:", session.token_type);
+    console.log("Expires in:", session.expires_in);
+    
+      let accessToken = session.provider_token;
+    
+      const response = await fetch('https://api.spotify.com/v1/me', {
+        headers: {
+          Authorization: 'Bearer ' + accessToken
+        }
+      });
+    
+      const data = await response.json();
+      console.log(data);
+    }
+
     return (
-        <div className="flex flex-col items-center justify-center h-screen">
-            <h1 className="text-3xl">HELLO</h1>
-            <button 
-            className="flex items-center gap-2 bg-red-500 text-white px-5 py-2.5 rounded-lg hover:bg-red-600 hover:scale-105 duration-300"
-            onClick={() => logOut()}
-          >
-            Log Out
-          </button>
+        <div>
+          <Dashboard />
         </div>
     );
 }
