@@ -151,8 +151,7 @@ def spotify_processing(session_ts, focus_ts, session_id):
             "spotify_url": spotify_url,
             "artist_name": artist_name,
             "image": image,
-            "start_time_unix": int(played_at.timestamp()),
-            "stop_time_unix": int(stopped_at)
+            "song_ts": [played_at.timestamp(), stopped_at],
         })
 
 
