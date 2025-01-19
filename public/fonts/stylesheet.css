@@ -1,0 +1,182 @@
+@font-face {
+    font-family: 'Urbane';
+    src: url('Urbane-LightItalic.eot');
+    src: local('Urbane Light Italic'), local('Urbane-LightItalic'),
+        url('Urbane-LightItalic.eot?#iefix') format('embedded-opentype'),
+        url('Urbane-LightItalic.woff2') format('woff2'),
+        url('Urbane-LightItalic.woff') format('woff'),
+        url('Urbane-LightItalic.ttf') format('truetype');
+    font-weight: 300;
+    font-style: italic;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Urbane';
+    src: url('Urbane-Medium.eot');
+    src: local('Urbane Medium'), local('Urbane-Medium'),
+        url('Urbane-Medium.eot?#iefix') format('embedded-opentype'),
+        url('Urbane-Medium.woff2') format('woff2'),
+        url('Urbane-Medium.woff') format('woff'),
+        url('Urbane-Medium.ttf') format('truetype');
+    font-weight: 500;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Urbane';
+    src: url('Urbane-ThinItalic.eot');
+    src: local('Urbane Thin Italic'), local('Urbane-ThinItalic'),
+        url('Urbane-ThinItalic.eot?#iefix') format('embedded-opentype'),
+        url('Urbane-ThinItalic.woff2') format('woff2'),
+        url('Urbane-ThinItalic.woff') format('woff'),
+        url('Urbane-ThinItalic.ttf') format('truetype');
+    font-weight: 100;
+    font-style: italic;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Urbane Demi';
+    src: url('Urbane-DemiBold.eot');
+    src: local('Urbane Demi Bold'), local('Urbane-DemiBold'),
+        url('Urbane-DemiBold.eot?#iefix') format('embedded-opentype'),
+        url('Urbane-DemiBold.woff2') format('woff2'),
+        url('Urbane-DemiBold.woff') format('woff'),
+        url('Urbane-DemiBold.ttf') format('truetype');
+    font-weight: 600;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Urbane';
+    src: url('Urbane-Heavy.eot');
+    src: local('Urbane Heavy'), local('Urbane-Heavy'),
+        url('Urbane-Heavy.eot?#iefix') format('embedded-opentype'),
+        url('Urbane-Heavy.woff2') format('woff2'),
+        url('Urbane-Heavy.woff') format('woff'),
+        url('Urbane-Heavy.ttf') format('truetype');
+    font-weight: 900;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Urbane';
+    src: url('Urbane-Thin.eot');
+    src: local('Urbane Thin'), local('Urbane-Thin'),
+        url('Urbane-Thin.eot?#iefix') format('embedded-opentype'),
+        url('Urbane-Thin.woff2') format('woff2'),
+        url('Urbane-Thin.woff') format('woff'),
+        url('Urbane-Thin.ttf') format('truetype');
+    font-weight: 100;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Urbane';
+    src: url('Urbane-BoldItalic.eot');
+    src: local('Urbane Bold Italic'), local('Urbane-BoldItalic'),
+        url('Urbane-BoldItalic.eot?#iefix') format('embedded-opentype'),
+        url('Urbane-BoldItalic.woff2') format('woff2'),
+        url('Urbane-BoldItalic.woff') format('woff'),
+        url('Urbane-BoldItalic.ttf') format('truetype');
+    font-weight: bold;
+    font-style: italic;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Urbane Extra';
+    src: url('Urbane-ExtraLight.eot');
+    src: local('Urbane Extra Light'), local('Urbane-ExtraLight'),
+        url('Urbane-ExtraLight.eot?#iefix') format('embedded-opentype'),
+        url('Urbane-ExtraLight.woff2') format('woff2'),
+        url('Urbane-ExtraLight.woff') format('woff'),
+        url('Urbane-ExtraLight.ttf') format('truetype');
+    font-weight: 200;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Urbane';
+    src: url('Urbane-HeavyItalic.eot');
+    src: local('Urbane Heavy Italic'), local('Urbane-HeavyItalic'),
+        url('Urbane-HeavyItalic.eot?#iefix') format('embedded-opentype'),
+        url('Urbane-HeavyItalic.woff2') format('woff2'),
+        url('Urbane-HeavyItalic.woff') format('woff'),
+        url('Urbane-HeavyItalic.ttf') format('truetype');
+    font-weight: 900;
+    font-style: italic;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Urbane';
+    src: url('Urbane-Bold.eot');
+    src: local('Urbane Bold'), local('Urbane-Bold'),
+        url('Urbane-Bold.eot?#iefix') format('embedded-opentype'),
+        url('Urbane-Bold.woff2') format('woff2'),
+        url('Urbane-Bold.woff') format('woff'),
+        url('Urbane-Bold.ttf') format('truetype');
+    font-weight: bold;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Urbane';
+    src: url('Urbane-MediumItalic.eot');
+    src: local('Urbane Medium Italic'), local('Urbane-MediumItalic'),
+        url('Urbane-MediumItalic.eot?#iefix') format('embedded-opentype'),
+        url('Urbane-MediumItalic.woff2') format('woff2'),
+        url('Urbane-MediumItalic.woff') format('woff'),
+        url('Urbane-MediumItalic.ttf') format('truetype');
+    font-weight: 500;
+    font-style: italic;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Urbane Demi';
+    src: url('Urbane-DemiBoldItalic.eot');
+    src: local('Urbane Demi Bold Italic'), local('Urbane-DemiBoldItalic'),
+        url('Urbane-DemiBoldItalic.eot?#iefix') format('embedded-opentype'),
+        url('Urbane-DemiBoldItalic.woff2') format('woff2'),
+        url('Urbane-DemiBoldItalic.woff') format('woff'),
+        url('Urbane-DemiBoldItalic.ttf') format('truetype');
+    font-weight: 600;
+    font-style: italic;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Urbane';
+    src: url('Urbane-Light.eot');
+    src: local('Urbane Light'), local('Urbane-Light'),
+        url('Urbane-Light.eot?#iefix') format('embedded-opentype'),
+        url('Urbane-Light.woff2') format('woff2'),
+        url('Urbane-Light.woff') format('woff'),
+        url('Urbane-Light.ttf') format('truetype');
+    font-weight: 300;
+    font-style: normal;
+    font-display: swap;
+}
+
+@font-face {
+    font-family: 'Urbane Extra';
+    src: url('Urbane-ExtraLightItalic.eot');
+    src: local('Urbane Extra Light Italic'), local('Urbane-ExtraLightItalic'),
+        url('Urbane-ExtraLightItalic.eot?#iefix') format('embedded-opentype'),
+        url('Urbane-ExtraLightItalic.woff2') format('woff2'),
+        url('Urbane-ExtraLightItalic.woff') format('woff'),
+        url('Urbane-ExtraLightItalic.ttf') format('truetype');
+    font-weight: 200;
+    font-style: italic;
+    font-display: swap;
+}
+
