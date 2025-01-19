@@ -1,11 +1,14 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { logOut } from "../app/lib/supabase/auth";
 import { Muse } from "../app/lib/Muse";
+import TimeSeriesChart from "./TimeSeriesGraph"
 
 
 export default function Dashboard() {
+    const [loading, setLoading] = useState(false);
+    const [sessionData, setSessionData] = useState<null>(null);
     const [status, setStatus] = useState("Not connected");
     const [recordedData, setRecordedData] = useState<{ startTimestamp: number | null; endTimestamp: number; eegData: any[][] } | null>(null);
     const museRef = useRef<Muse | null>(null);
@@ -45,8 +48,36 @@ export default function Dashboard() {
         console.log("Recording stopped.", data);
     };
 
+    const getData = async () => {
+        try {
+            setLoading(true);
+            const res = await fetch("../app/api/fetch_session/route.ts");
+            const response = await res.json();
+            if (response && response.legth > 0) {
+                setSessionData(response[0]);
+            }
+            else {
+                console.log("No data found");
+            }
+        } catch (error) {
+            console.error("Error getting data:", error);
+        } finally {
+            setLoading(false);
+        };
+    }
+
     return (
-        <div className="flex flex-col items-center justify-center h-screen">
+        <div className="flex flex-col items-center absolute w-full h-dvh bg-gradient-to-b from-gray-100 via-green-50 to-green-50">
+            <nav className="flex w-full justify-between items-center px-16 my-8">
+                <div className="text-xl font-semibold hover:text-sage2 duration-200 cursor-pointer">Home</div>
+                <div className="flex space-x-8">
+                    <div className="text-xl font-semibold hover:text-sage2 duration-200 cursor-pointer">Songs</div>
+                    <div className="text-xl font-semibold hover:text-sage2 duration-200 cursor-pointer">
+                        Dashboard
+                    </div>
+                </div>
+            </nav>
+
             <h1 className="text-3xl">HELLO</h1>
             <div className="flex gap-4 mt-4">
                 <button 
