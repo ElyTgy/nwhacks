@@ -1,29 +1,42 @@
 import React from "react";
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend } from "recharts";
 
-// Example 2D time-series data
-const data = [
-  { timestep: 1, channel1: 10, channel2: 15, channel3: 20 },
-  { timestep: 2, channel1: 12, channel2: 18, channel3: 22 },
-  { timestep: 3, channel1: 14, channel2: 20, channel3: 25 },
-  { timestep: 4, channel1: 16, channel2: 22, channel3: 28 },
-];
-
 // The `LineChart` component
-export default function TimeSeriesChart = () => (
-  <LineChart
-    width={600}
-    height={300}
-    data={data}
-    margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
-  >
-    <CartesianGrid strokeDasharray="3 3" />
-    <XAxis dataKey="timestep" label={{ value: "Timesteps", position: "insideBottomRight", offset: -5 }} />
-    <YAxis label={{ value: "Values", angle: -90, position: "insideLeft" }} />
-    <Tooltip />
-    <Legend />
-    <Line type="monotone" dataKey="channel1" stroke="#8884d8" />
-    <Line type="monotone" dataKey="channel2" stroke="#82ca9d" />
-    <Line type="monotone" dataKey="channel3" stroke="#ffc658" />
-  </LineChart>
-);
+export default function TimeSeriesChart(props: { data: any, ts: any, fs: any }) {
+    // Preprocess the data
+    function preprocessData(data: any, ts: any, fs: any) {
+        const numChannels = data.length;
+        const numSamples = data[0].length;
+      
+        // Create an array of objects for each sample
+        const result = Array.from({ length: numSamples }, (_, sampleIdx) => {
+          const entry: { [key: string]: any } = { timestep: ts + sampleIdx / fs }; // Adjust timestep to match sampling rate
+          for (let channelIdx = 0; channelIdx < numChannels; channelIdx++) {
+            entry[`channel${channelIdx + 1}`] = data[channelIdx][sampleIdx];
+          }
+          return entry;
+        });
+      
+        return result;
+      }
+  
+    const processedData = preprocessData(props.data, props.ts, props.fs);
+
+  return (
+    <LineChart
+      width={600}
+      height={300}
+      data={processedData}
+      margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
+    >
+      <CartesianGrid strokeDasharray="3 3" />
+      <XAxis dataKey="timestep" label={{ value: "Time (s)", position: "insideBottomRight", offset: -5 }} />
+      <YAxis label={{ value: "Voltage", angle: -90, position: "insideLeft" }} />
+      <Tooltip />
+      <Legend />
+      {Object.keys(processedData[0]).filter(key => key !== "timestep").map(channel => (
+        <Line key={channel} type="monotone" dataKey={channel} />
+      ))}
+    </LineChart>
+  );
+  }

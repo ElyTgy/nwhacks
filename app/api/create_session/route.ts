@@ -1,20 +1,38 @@
 import { NextResponse } from 'next/server';
 
 export async function POST(request: Request) {
-  const { title, description } = await request.json();
+    try {
+        const data = await request.json();
+        const { startTimestamp, endTimestamp, eegData } = data;
 
-  if (!title || !description) {
-    return NextResponse.json({ error: 'Title and description are required' }, { status: 400 });
-  }
+        if (!startTimestamp || !endTimestamp || !eegData) {
+            return NextResponse.json(
+                { error: 'Missing required fields' }, 
+                { status: 400 }
+            );
+        }
 
-//   const { data, error } = await supabase
-//     .from('Session')
-//     .insert([{ title, description }]);
+        // Make request to Flask server
+        const flaskResponse = await fetch(`${process.env.NEXT_FLASK_URL!}/post_data`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(data),
+        });
 
+        if (!flaskResponse.ok) {
+            throw new Error(`Flask server responded with status: ${flaskResponse.status}`);
+        }
 
-  if (error) {
-    return NextResponse.json({ error: error.message }, { status: 500 });
-  }
+        const responseData = await flaskResponse.json();
+        return NextResponse.json(responseData, { status: 200 });
 
-  return NextResponse.json({ data }, { status: 200 });
+    } catch (error: any) {
+        console.error('Error in create_session route:', error);
+        return NextResponse.json(
+            { error: error.message || 'Internal server error' }, 
+            { status: 500 }
+        );
+    }
 }

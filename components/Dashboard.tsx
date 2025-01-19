@@ -3,15 +3,33 @@
 import { useState, useRef, useEffect } from "react";
 import { logOut } from "../app/lib/supabase/auth";
 import { Muse } from "../app/lib/Muse";
-import TimeSeriesChart from "./TimeSeriesGraph"
+import TimeSeriesChart from "./TimeSeriesGraph";
+import MuseModal from "./MuseModal";
+import Link from "next/link";
+import { useToast } from "./hooks/use-toast"
 
 
 export default function Dashboard() {
-    const [loading, setLoading] = useState(false);
-    const [sessionData, setSessionData] = useState<null>(null);
+    interface SessionData {
+        id: any;
+        session_ts: any;
+        focus_ts: any;
+        bandpassed: any;
+        spectrogram: any;
+        bandpowers: any;
+        concentration_score: any;
+    }
+    
+    const [loading, setLoading] = useState(false);    
+    const [sessionData, setSessionData] = useState<SessionData | null>(null);
     const [status, setStatus] = useState("Not connected");
+    const [isRecording, setIsRecording] = useState(false);
     const [recordedData, setRecordedData] = useState<{ startTimestamp: number | null; endTimestamp: number; eegData: any[][] } | null>(null);
+    const [sessionId, setSessionId] = useState<null>(null);
+    const [ts, setTs] = useState<null>(null);
     const museRef = useRef<Muse | null>(null);
+    const [dialogOpen, setDialogOpen] = useState(false);
+    const { toast } = useToast();
 
     const connectMuse = async () => {
         try {
@@ -34,7 +52,12 @@ export default function Dashboard() {
         }
         museRef.current.startRecording();
         setStatus("Recording started...");
+        setIsRecording(true);
         console.log("Recording started...");
+        toast({
+            title: "Recording Started!",
+            description: "Your session is now recording data.",
+        });
     };
 
     const stopRecording = async () => {
@@ -45,15 +68,21 @@ export default function Dashboard() {
         const data = museRef.current.stopRecording();
         setStatus("Recording stopped.");
         setRecordedData(data);
+        setIsRecording(false);
         console.log("Recording stopped.", data);
+        toast({
+            title: "Recording Stopped!",
+            description: "Your session is complete.",
+        });
     };
 
-    const getData = async () => {
+    const getSessionData = async (id: any) => {
         try {
             setLoading(true);
-            const res = await fetch("../app/api/fetch_session/route.ts");
+            const res = await fetch(`/api/fetch_session/route.ts?id=${id}`);
             const response = await res.json();
-            if (response && response.legth > 0) {
+            if (response && response.length > 0) {
+                console.log(response);
                 setSessionData(response[0]);
             }
             else {
@@ -66,50 +95,90 @@ export default function Dashboard() {
         };
     }
 
+    //called after stop recording
+    const handleCreateSession = async (values: any) => {
+        try {
+          setLoading(true);
+          const res = await fetch(`/api/create_session`, {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(values), // recordedData 
+          });
+          
+          
+            
+            const response = await res.json();
+            console.log('Session created:', response);
+            setSessionId(response[0].id);
+            
+        } catch (e) {
+            console.error('Error creating session:', e);
+            toast({
+                title: "Error",
+                description: "Failed to save session data",
+                variant: "destructive",
+            });
+        } finally {
+            setLoading(false);
+        }
+    }
+
+    const handleStopRecording = async () => {
+        await stopRecording();
+        handleCreateSession(recordedData);
+    }
+
+    useEffect(() => {
+        getSessionData(sessionId);
+    }, [sessionId]);
+
     return (
         <div className="flex flex-col items-center absolute w-full h-dvh bg-gradient-to-b from-gray-100 via-green-50 to-green-50">
             <nav className="flex w-full justify-between items-center px-16 my-8">
-                <div className="text-xl font-semibold hover:text-sage2 duration-200 cursor-pointer">Home</div>
+                <Link href="/" className="text-xl font-semibold hover:text-sage2 duration-200">
+                    Home
+                </Link>
                 <div className="flex space-x-8">
-                    <div className="text-xl font-semibold hover:text-sage2 duration-200 cursor-pointer">Songs</div>
-                    <div className="text-xl font-semibold hover:text-sage2 duration-200 cursor-pointer">
-                        Dashboard
-                    </div>
+                    <Link href="/songs" className="text-xl font-semibold hover:text-sage2 duration-200">
+                        Songs
+                    </Link>
+                    <button 
+                        onClick={() => logOut()}
+                        className="text-xl font-semibold hover:text-sage2 duration-200"
+                    >
+                        Logout
+                    </button>
                 </div>
             </nav>
 
-            <h1 className="text-3xl">HELLO</h1>
-            <div className="flex gap-4 mt-4">
-                <button 
-                    className="bg-blue-500 text-white px-5 py-2.5 rounded-lg hover:bg-blue-600 hover:scale-105 duration-300"
-                    onClick={connectMuse}
-                >
-                    Connect to Muse
-                </button>
-                <button 
-                    className="bg-green-500 text-white px-5 py-2.5 rounded-lg hover:bg-green-600 hover:scale-105 duration-300"
-                    onClick={startRecording}
-                >
-                    Start Recording
-                </button>
-                <button 
-                    className="bg-red-500 text-white px-5 py-2.5 rounded-lg hover:bg-red-600 hover:scale-105 duration-300"
-                    onClick={stopRecording}
-                >
-                    Stop Recording
-                </button>
+            <h1 className="text-6xl font-semibold text-center my-8">
+                Let's get started.
+            </h1>
+            <p className="text-xl text-gray-600 mb-2 max-w-2xl text-center">
+                Connect your Muse device to start recording your brain activity.
+            </p>
+            <div className="mt-4 space-x-8">
+                <MuseModal 
+                    connectMuse={connectMuse}
+                    startRecording={startRecording}
+                    status={status}
+                    open={dialogOpen}
+                    setOpen={setDialogOpen}
+                />
+                {isRecording && (
+                    <button 
+                        className="bg-red-500 text-white px-5 py-2.5 rounded-lg hover:bg-red-600 hover:scale-105 duration-300"
+                        onClick={handleStopRecording}
+                    >
+                        Stop Recording
+                    </button>
+                )}
             </div>
-            <button 
-                className="mt-4 bg-gray-500 text-white px-5 py-2.5 rounded-lg hover:bg-gray-600 hover:scale-105 duration-300"
-                onClick={() => logOut()}
-            >
-                Log Out
-            </button>
-            <p className="mt-4 text-lg">Status: {status}</p>
-            {recordedData && (
-                <pre className="mt-4 bg-gray-100 p-4 rounded-lg text-sm max-w-2xl overflow-auto">
-                    {JSON.stringify(recordedData, null, 2)}
-                </pre>
+            {sessionId && (
+                <TimeSeriesChart data={sessionData?.bandpassed} ts={ts} fs={256}/> 
+                
             )}
         </div>
     );

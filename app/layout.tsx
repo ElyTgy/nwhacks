@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { Toaster } from "../components/ui/toaster"
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -22,6 +23,7 @@ export default function RootLayout({
         className="antialiased [#__next-route-announcer__]:hidden"
       >
         {children}
+        <Toaster />
       </body>
     </html>
   );
