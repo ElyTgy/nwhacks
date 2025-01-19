@@ -1,0 +1,22 @@
+version: "3.8"
+
+services:
+  flask:
+    build: ./flask
+    container_name: flask-service
+    ports:
+      - "5000:5000"
+    env_file:
+      - ./flask/.env
+    restart: unless-stopped
+
+  nextjs:
+    build: ./nextjs
+    container_name: nextjs-service
+    ports:
+      - "3000:3000"
+    env_file:
+      - ./nextjs/.env.local
+    environment:
+      - NODE_ENV=production
+    restart: unless-stopped

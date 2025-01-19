@@ -1,0 +1,10 @@
+numpy
+matplotlib
+scipy
+scikit-learn
+pylsl
+flask
+python-dotenv
+flask-cors
+supabase
+requests

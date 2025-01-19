@@ -12,11 +12,13 @@
     "@supabase/ssr": "^0.5.2",
     "@supabase/supabase-js": "^2.47.16",
     "@tailwindcss/forms": "^0.5.10",
+    "clsx": "^2.1.1",
     "lucide-react": "^0.473.0",
     "next": "^14.1.0",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "supabase": "^2.6.8",
+    "tailwind-merge": "^2.6.0",
     "tailwindcss-animate": "^1.0.7",
     "typed.js": "^2.1.0"
   },
