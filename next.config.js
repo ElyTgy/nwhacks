@@ -1,7 +1,12 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   images: {
-    domains: ['i.scdn.co'],
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: '**', // This will allow all domains - you might want to restrict this to specific domains
+      },
+    ],
   },
   reactStrictMode: true,
   experimental: {

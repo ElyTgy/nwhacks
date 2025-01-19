@@ -161,7 +161,8 @@ export default function Dashboard(props: {token: any}) {
     }, [sessionId]);
 
     return (
-        <div className="flex flex-col items-center absolute w-full h-dvh bg-gradient-to-b from-gray-100 via-green-50 to-green-50">
+        <div className="min-h-screen w-full bg-gradient-to-b from-gray-100 via-green-50 to-green-50">
+            <div className="flex flex-col min-h-screen">
             <nav className="flex w-full justify-between items-center px-16 my-8">
                 <Link href="/" className="text-xl font-semibold hover:text-sage2 duration-200">
                     Home
@@ -230,27 +231,38 @@ export default function Dashboard(props: {token: any}) {
                     <TimeSeriesChart data={sessionData.bandpassed} ts={ts} fs={256} yax_label={"Voltage"}/>
                     <TimeSeriesChart data={sessionData.concentration_score} ts={ts} fs={256} yax_label={"Concentration Score"}/>
                 </div>
-                <Alert variant="default" className="mt-8">
-                    <div className="relative w-16 h-16">
-                        <Image
-                            src={sessionData.Songs[0].image}
-                            alt="Album Art"
-                            fill
-                            className="object-cover"
-                            priority
-                        />
-                    </div>
-                    <AlertTitle>
-                        {sessionData.Songs[0].song_name}
-                    </AlertTitle>
-                    <AlertDescription>
-                        {formatArtistNames(JSON.parse(sessionData.Songs[0].artist_name))}
-                    </AlertDescription>
-                </Alert>
+                <h1 className="text-xl font-semibold text-center mt-16">
+                    Focus Songs
+                </h1>
+                <div className="flex flex-col gap-4 mt-8 h-full w-full max-w-2xl px-4">
+                    {sessionData.Songs.map((song, index) => (
+                        <Alert key={song.id || index} variant="default" className="flex items-center gap-4">
+                            <div className="shrink-0">    
+                                <Image
+                                    src={song.image}
+                                    alt={`${song.song_name} Album Art`}
+                                    width={64}
+                                    height={64}
+                                    className="object-cover"
+                                    priority={index === 0}
+                                />
+                            </div>
+                            <div className="flex-1 min-w-0">
+                                <AlertTitle className="line-clamp-1">
+                                    {song.song_name}
+                                </AlertTitle>
+                                <AlertDescription className="line-clamp-1 text-gray-600">
+                                    {formatArtistNames(JSON.parse(song.artist_name))}
+                                </AlertDescription>
+                            </div>
+                        </Alert>
+                    ))}
+                </div>
             </div>
             ) : (
                 <></>
             )}
+            </div>
         </div>
     );
 }

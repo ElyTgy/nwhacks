@@ -64,7 +64,8 @@ module.exports = {
   		'5xl': '64rem',
   		'6xl': '72rem',
   		'7xl': '80rem',
-  		full: '100%'
+  		full: '100%',
+		screen: '100vh'
   	},
   	fontSize: {
   		xs: '0.75rem',
