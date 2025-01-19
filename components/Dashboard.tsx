@@ -211,7 +211,7 @@ export default function Dashboard(props: {token: any}) {
                 </h1>
             )}
             {loading ? (
-                <div className="flex flex-col space-y-3 mt-8">
+                <div className="flex flex-col items-center space-y-3 mt-8">
                     <Skeleton className="h-[125px] w-[250px] rounded-xl" />
                     <div className="flex flex-col space-y-2">
                         <Skeleton className="h-[10px] w-[250px]" />
@@ -229,6 +229,11 @@ export default function Dashboard(props: {token: any}) {
                 </h1>
                 <div className="pr-16 h-full">
                     <TimeSeriesChart data={sessionData.bandpassed} ts={ts} fs={256} yax_label={"Voltage"} focus_bars={sessionData.focus_ts} session_ts={sessionData.session_ts}/>
+                </div>
+                <h1 className="text-2xl font-semibold text-center my-8">
+                    Here is your focus over time during the session.
+                </h1>
+                <div className="pr-16 h-full">
                     <TimeSeriesChart data={sessionData.concentration_score} ts={ts} fs={256} yax_label={"Concentration Score"} focus_bars={sessionData.focus_ts} session_ts={sessionData.session_ts} />
                 </div>
                 <h1 className="text-xl font-semibold text-center mt-16">

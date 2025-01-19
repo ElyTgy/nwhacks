@@ -76,7 +76,7 @@ def receive_data():
     focus_ts = []
     focus_start = None
     for i, score in enumerate(concentration_score):
-        if score > 0.15:
+        if score > 0.05:
             if focus_start is None:
                 focus_start = i
         else:
