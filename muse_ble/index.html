@@ -1,63 +1,62 @@
-
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Muse 2 Web Bluetooth</title>
+    <title>MuseJS Test</title>
+    <script src="Muse.js"></script>
 </head>
 <body>
-    <h1>Muse 2 Web Bluetooth</h1>
-    <button id="connectButton">Connect to Muse 2</button>
-    <p id="status">Not connected</p>
-   
+    <h1>MuseJS Test</h1>
+    <button id="connectBtn">Connect to Muse</button>
+    <p id="status">Status: Not connected</p>
+    <pre id="output"></pre>
+
     <script>
-        async function connectMuse2() {
+        document.getElementById("connectBtn").addEventListener("click", async () => {
             try {
-                const device = await navigator.bluetooth.requestDevice({
-                    acceptAllDevices: true, // Accepts all BLE devices
-                    optionalServices: ['0000fe8d-0000-1000-8000-00805f9b34fb'] // Muse 2 BLE Service UUID
-                });
+                const muse = new Muse();
+                document.getElementById("status").textContent = "Status: Connecting...";
+                
+                await muse.connect();
+                document.getElementById("status").textContent = "Status: Connected";
 
-                document.getElementById("status").textContent = `Connected to: ${device.name}`;
-                console.log("Connected to:", device.name);
+                console.log("Muse connected!");
 
-                const server = await device.gatt.connect();
-                const service = await server.getPrimaryService('0000fe8d-0000-1000-8000-00805f9b34fb');
+                console.log(muse.eeg[0]);
+                
+                //function logData() {
+                    //let output = document.getElementById("output");
+                    //output.textContent = ""; // Clear previous logs
+                    
+                    /*
+                    for (let i = 0; i < 5; i++) {
+                        output.textContent += `EEG[${i}]: ${muse.eeg[i].read()}\n`;
+                        console.log(muse.eeg[i]);
+                    }
 
-                console.log("Service discovered:", service);
-                document.getElementById("status").textContent = "Connected & Service found";
+                    for (let i = 0; i < 3; i++) {
+                        output.textContent += `PPG[${i}]: ${muse.ppg[i].read()}\n`;
+                    }
 
-                return { device, server, service };
+                    for (let i = 0; i < 3; i++) {
+                        output.textContent += `Accelerometer[${i}]: ${muse.accelerometer[i].read()}\n`;
+                    }
+
+                    for (let i = 0; i < 3; i++) {
+                        output.textContent += `Gyroscope[${i}]: ${muse.gyroscope[i].read()}\n`;
+                    }
+
+                    output.textContent += `Battery Level: ${muse.batteryLevel}%\n`;
+                    output.textContent += `Firmware Rev: ${muse.info["fw"]}\n`;*/
+                //}
+
+                // Log data every second
+                setInterval(logData, 1000);
+
             } catch (error) {
-                console.error("Error connecting to Muse 2:", error);
-                document.getElementById("status").textContent = "Connection failed";
-            }
-        }
-
-        async function startEEGStream(service) {
-            try {
-                const characteristic = await service.getCharacteristic('273e0003-4c4d-454d-96be-f03bac821358');
-                await characteristic.startNotifications();
-
-                characteristic.addEventListener('characteristicvaluechanged', (event) => {
-                    const value = new Uint8Array(event.target.value.buffer);
-                    console.log("EEG Data Received:", value);
-                    document.getElementById("status").textContent = "Receiving EEG data";
-                });
-
-                console.log("Subscribed to EEG data stream");
-            } catch (error) {
-                console.error("Error subscribing to EEG data:", error);
-                document.getElementById("status").textContent = "Failed to start EEG stream";
-            }
-        }
-
-        document.getElementById("connectButton").addEventListener("click", async () => {
-            let { service } = await connectMuse2();
-            if (service) {
-                await startEEGStream(service);
+                document.getElementById("status").textContent = "Status: Connection failed";
+                console.error("Error connecting to Muse:", error);
             }
         });
     </script>
