@@ -1,6 +1,5 @@
 "use client";
 
-
 import React, { useState, useEffect } from "react";
 import Typed from "typed.js";
 import { AudioLines } from 'lucide-react';
@@ -28,12 +27,20 @@ export default function Home() {
   }, []);
 
   const signInWithSpotify = async () => {
+    try {
     const { data, error } = await supabase.auth.signInWithOAuth({
       provider: 'spotify',
       options: {
-        redirectTo: `http://localhost:3000/auth/callback?next=/dashboard`
+        redirectTo: `http://localhost:3000/auth/callback?next=/dashboard`,
+        scopes: 'user-read-email user-read-private'
       }
     })
+    if (error) {
+        console.error('Spotify auth error:', error)
+      }
+    } catch (err) {
+    console.error('Unexpected error during auth:', err)
+    }
   }
 
   const el = React.useRef(null);
