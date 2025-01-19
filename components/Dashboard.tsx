@@ -21,7 +21,7 @@ export default function Dashboard(props: {token: any}) {
     }
     
     const [loading, setLoading] = useState(false);    
-    const [sessionData, setSessionData] = useState<SessionData | null>(null);
+    const [sessionData, setSessionData] = useState<SessionData>({id: null, session_ts: null, focus_ts: null, bandpassed: null, spectrogram: null, bandpowers: null, concentration_score: null});
     const [status, setStatus] = useState("Not connected");
     const [isRecording, setIsRecording] = useState(false);
     const [recordedData, setRecordedData] = useState<{ startTimestamp: number | null; endTimestamp: number; eegData: any[][] } | null>(null);
@@ -181,9 +181,9 @@ export default function Dashboard(props: {token: any}) {
                     </button>
                 )}
             </div>
-            {sessionId ? (
-                <TimeSeriesChart data={sessionData?.bandpassed} ts={ts} fs={256}/> 
-            ): (
+            {sessionId && !loading ? (
+                <TimeSeriesChart data={sessionData.bandpassed} ts={ts} fs={256}/> 
+            ) : (
                 <></>
             )}
         </div>
