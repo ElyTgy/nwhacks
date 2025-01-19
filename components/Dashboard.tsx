@@ -228,7 +228,7 @@ export default function Dashboard(props: {token: any}) {
                 </h1>
                 <div className="pr-16">
                     <TimeSeriesChart data={sessionData.bandpassed} ts={ts} fs={256} yax_label={"Voltage"}/>
-                
+                    <TimeSeriesChart data={sessionData.concentration_score} ts={ts} fs={256} yax_label={"Concentration Score"}/>
                 </div>
                 <Alert variant="default" className="mt-8">
                     <div className="relative w-16 h-16">
