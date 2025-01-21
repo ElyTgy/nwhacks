@@ -16,7 +16,8 @@ export async function GET(request: Request) {
         *,
         Songs(id,image,song_name,spotify_url,artist_name,song_ts,focused)
       `)
-      .eq('id', id);
+      .eq('id', id)
+      .eq('Songs.focused', true);
     
     if (error) {
       console.error("Error from the session ID fetch:", error);
