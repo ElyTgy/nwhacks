@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MuseJS Test</title>
+    <script src="Muse.js"></script>
+</head>
+<body>
+    <h1>MuseJS Test</h1>
+    
+    <button id="connectBtn">Connect to Muse</button>
+    <button id="startRecordingBtn" disabled>Start Recording</button>
+    <button id="stopRecordingBtn" disabled>Stop Recording</button>
+    
+    <p id="status">Status: Not connected</p>
+    <pre id="output"></pre>
+
+    <script>
+        let muse = new Muse();
+
+        document.getElementById("connectBtn").addEventListener("click", async () => {
+            try {
+                document.getElementById("status").textContent = "Status: Connecting...";
+                
+                await muse.connect();
+                document.getElementById("status").textContent = "Status: Connected";
+                console.log("Muse connected!");
+
+                // Enable recording buttons
+                document.getElementById("startRecordingBtn").disabled = false;
+                document.getElementById("stopRecordingBtn").disabled = false;
+
+            } catch (error) {
+                document.getElementById("status").textContent = "Status: Connection failed";
+                console.error("Error connecting to Muse:", error);
+            }
+        });
+
+        document.getElementById("startRecordingBtn").addEventListener("click", () => {
+            muse.startRecording();
+            document.getElementById("status").textContent = "Status: Recording started...";
+            console.log("Recording started...");
+        });
+
+        document.getElementById("stopRecordingBtn").addEventListener("click", async () => {
+            const recordedData = muse.stopRecording();
+            document.getElementById("status").textContent = "Status: Recording stopped.";
+            console.log("Recording stopped.");
+
+            // Display recorded data
+            document.getElementById("output").textContent = JSON.stringify(recordedData, null, 2);
+
+            // Send EEG data to Flask server
+            try {
+                const response = await fetch("http://localhost:5000/eeg", {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify(recordedData)
+                });
+
+                const result = await response.json();
+                console.log("Server Response:", result);
+                document.getElementById("status").textContent = "Status: Data sent successfully!";
+
+            } catch (error) {
+                console.error("Error sending EEG data:", error);
+                document.getElementById("status").textContent = "Status: Failed to send data.";
+            }
+        });
+
+    </script>
+</body>
+</html>
